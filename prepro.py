@@ -214,8 +214,14 @@ def main(params):
     if 'id' in img: jimg['id'] = img['id'] # copy over & mantain an id, if present (e.g. coco ids, useful)
     
     out['images'].append(jimg)
-  
-  json.dump(out, open(params['output_json'], 'w'))
+
+  with io.open(params['output_json'] , 'w' , encoding='utf8') as hindi_file:
+      pp = json.dumps(out , ensure_ascii='False' , encoding='utf8')
+      hindi_file.write( unicode(pp) )
+
+
+  # json.dump(out, , 'w'))
+  #
   print( 'wrote ', params['output_json'] )
 
 if __name__ == "__main__":
