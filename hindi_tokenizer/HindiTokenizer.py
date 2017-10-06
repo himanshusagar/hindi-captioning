@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-	
+# -*- coding: utf-8 -*-
 import codecs
 import re
+
+##from::kUnal
 class Tokenizer():
 	
 
@@ -24,10 +26,10 @@ class Tokenizer():
 	def print_sentences(self,sentences=None):
 		if sentences:
 			for i in sentences:
-				print i.encode('utf-8')
+				print(i.encode('utf-8'))
 		else:
 			for i in self.sentences:
-				print i.encode('utf-8')
+				print(i.encode('utf-8'))
 
 
 	def clean_text(self):
@@ -85,10 +87,10 @@ class Tokenizer():
 		'''done'''
 		if print_list is None:
 			for i in self.tokens:
-				print i.encode('utf-8')
+				print(i.encode('utf-8'))
 		else:
 			for i in print_list:
-				print i.encode('utf-8')
+				print(i.encode('utf-8'))
 
 
 	def tokens_count(self):
