@@ -14,7 +14,7 @@ class Vgg16:
         else:
             assert os.path.isfile(vgg16_npy_path), vgg16_npy_path + " doesn't exist."
             self.data_dict = np.load(vgg16_npy_path).item()
-            print "npy file loaded"
+            print ("npy file loaded")
 
     def build(self, rgb):
         """
@@ -24,7 +24,7 @@ class Vgg16:
         """
 
         start_time = time.time()
-        print "build model started"
+        print ("build model started")
         rgb_scaled = rgb * 255.0
 
         # Convert RGB to BGR
@@ -80,7 +80,7 @@ class Vgg16:
         self.prob = tf.nn.softmax(self.fc8, name="prob")
 
         self.data_dict = None
-        print "build model finished: %ds" % (time.time() - start_time)
+        print ("build model finished: %ds" % (time.time() - start_time))
 
     def avg_pool(self, bottom, name):
         return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
@@ -130,10 +130,10 @@ class Vgg16:
 
     def get_conv_filter(self, bottom, name):
         if self.data_dict.get(name, None) is None:
-            print 'No pretrained weight for', name, 'filter'
+            print ('No pretrained weight for', name, 'filter')
             n_in = bottom.get_shape()[-1].value
             n_out = self.get_n_out(name)
-            print 'n_in', n_in, 'n_out', n_out
+            print ('n_in', n_in, 'n_out', n_out)
             return tf.get_variable("filter",
                                 shape=[3, 3, n_in, n_out],
                                 dtype=tf.float32, 
@@ -142,18 +142,18 @@ class Vgg16:
 
     def get_bias(self, bottom, name):
         if self.data_dict.get(name, None) is None:
-            print 'No pretrained weight for', name, 'biases'
+            print ('No pretrained weight for', name, 'biases')
             n_out = self.get_n_out(name)
-            print 'n_out', n_out
+            print ('n_out', n_out)
             return tf.Variable(tf.constant(0.0, shape=[n_out], dtype=tf.float32), trainable=True, name='biases')
         return tf.Variable(self.data_dict[name][1], name="biases")
 
     def get_fc_weight(self, bottom, name):
         if self.data_dict.get(name, None) is None:
-            print 'No pretrained weight for', name, 'weights'
+            print ('No pretrained weight for', name, 'weights')
             n_in = bottom.get_shape()[-1].value
             n_out = self.get_n_out(name)
-            print 'n_in', n_in, 'n_out', n_out
+            print ('n_in', n_in, 'n_out', n_out)
             return tf.get_variable("weights",
                                 shape=[n_in, n_out],
                                 dtype=tf.float32, 
@@ -168,7 +168,7 @@ class Vgg19:
         else:
             assert os.path.isfile(vgg19_npy_path), vgg19_npy_path + " doesn't exist."
             self.data_dict = np.load(vgg19_npy_path).item()
-            print "npy file loaded"
+            print ("npy file loaded")
 
     def build(self, rgb):
         """
@@ -285,10 +285,10 @@ class Vgg19:
 
     def get_conv_filter(self, bottom, name):
         if self.data_dict.get(name, None) is None:
-            print 'No pretrained weight for', name, 'filter'
+            print ('No pretrained weight for', name, 'filter')
             n_in = bottom.get_shape()[-1].value
             n_out = self.get_n_out(name)
-            print 'n_in', n_in, 'n_out', n_out
+            print ('n_in', n_in, 'n_out', n_out)
             return tf.get_variable("filter",
                                 shape=[3, 3, n_in, n_out],
                                 dtype=tf.float32, 
@@ -297,18 +297,18 @@ class Vgg19:
 
     def get_bias(self, bottom, name):
         if self.data_dict.get(name, None) is None:
-            print 'No pretrained weight for', name, 'biases'
+            print ('No pretrained weight for', name, 'biases')
             n_out = self.get_n_out(name)
-            print 'n_out', n_out
+            print ('n_out', n_out)
             return tf.Variable(tf.constant(0.0, shape=[n_out], dtype=tf.float32), trainable=True, name='biases')
         return tf.Variable(self.data_dict[name][1], name="biases")
 
     def get_fc_weight(self, bottom, name):
         if self.data_dict.get(name, None) is None:
-            print 'No pretrained weight for', name, 'weights'
+            print ('No pretrained weight for', name, 'weights')
             n_in = bottom.get_shape()[-1].value
             n_out = self.get_n_out(name)
-            print 'n_in', n_in, 'n_out', n_out
+            print ('n_in', n_in, 'n_out', n_out)
             return tf.get_variable("weights",
                                 shape=[n_in, n_out],
                                 dtype=tf.float32, 
