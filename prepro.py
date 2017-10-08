@@ -33,6 +33,9 @@ import h5py
 import numpy as np
 from scipy.misc import imread, imresize
 
+from hindi_tokenizer.HindiTokenizer import Tokenizer
+
+
 def prepro_captions(imgs):
   
   # preprocess all the captions
@@ -40,7 +43,8 @@ def prepro_captions(imgs):
   for i,img in enumerate(imgs):
     img['processed_tokens'] = []
     for j,s in enumerate(img['captions']):
-      txt = str(s)##.lower()translate(None, string.punctuation).strip().split()
+      txt = Tokenizer(s[0])
+      txt = txt.return_final_list() ##.lower()translate(None, string.punctuation).strip().split()
       img['processed_tokens'].append(txt)
       if i < 10 and j == 0: print( txt)
 
@@ -215,10 +219,11 @@ def main(params):
     
     out['images'].append(jimg)
 
-  with io.open(params['output_json'] , 'w' , encoding='utf8') as hindi_file:
+  with open(params['output_json'] , 'w' , encoding='utf8') as hindi_file:
       pp = json.dumps(out , ensure_ascii='False' , encoding='utf8')
-      hindi_file.write( unicode(pp) )
+      hindi_file.write( pp  )
 
+#  hindi_file.write(unicode(pp))
 
   # json.dump(out, , 'w'))
   #
