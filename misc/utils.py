@@ -51,7 +51,7 @@ def flatten_state(state):
         return [state.c, state.h]
     elif isinstance(state, tuple):
         result = []
-        for i in xrange(len(state)):
+        for i in range(len(state)):
             result += flatten_state(state[i])
         return result
     else:
@@ -66,7 +66,7 @@ def get_placeholder_state(state_size, scope = 'placeholder_state'):
             h = tf.placeholder(tf.float32, [None, state_size.h], name='LSTM_h')
             return tf.contrib.rnn.LSTMStateTuple(c,h)
         elif isinstance(state_size, tuple):
-            result = [get_placeholder_state(state_size[i], "layer_"+str(i)) for i in xrange(len(state_size))]
+            result = [get_placeholder_state(state_size[i], "layer_"+str(i)) for i in range(len(state_size))]
             return tuple(result)
         elif isinstance(state_size, int):
             return tf.placeholder(tf.float32, [None, state_size], name='state')
@@ -113,7 +113,7 @@ def get_initial_state(input, state_size, scope = 'init_state'):
             h = slim.fully_connected(input, state_size.h, activation_fn=tf.nn.tanh, scope='LSTM_h')
             return tf.contrib.rnn.LSTMStateTuple(c,h)
         elif isinstance(state_size, tuple):
-            result = [get_initial_state(input, state_size[i], "layer_"+str(i)) for i in xrange(len(state_size))]
+            result = [get_initial_state(input, state_size[i], "layer_"+str(i)) for i in range(len(state_size))]
             return tuple(result)
         elif isinstance(state_size, int):
             return slim.fully_connected(input, state_size, activation_fn=tf.nn.tanh, scope='state')
@@ -131,7 +131,7 @@ def expand_feat(input, multiples, scope = 'expand_feat'):
             h = expand_feat(input.h, multiples, scope='expand_LSTM_c')
             return tf.contrib.rnn.LSTMStateTuple(c,h)
         elif isinstance(input, tuple):
-            result = [expand_feat(input[i], multiples, "expand_layer_"+str(i)) for i in xrange(len(input))]
+            result = [expand_feat(input[i], multiples, "expand_layer_"+str(i)) for i in range(len(input))]
             return tuple(result)
         else:
             return tf.reshape(tf.tile(tf.expand_dims(input, 1), [1, multiples, 1]), [tf.shape(input)[0] * multiples, input.get_shape()[1].value])

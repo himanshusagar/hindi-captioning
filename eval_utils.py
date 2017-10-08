@@ -9,8 +9,8 @@ def language_eval(dataset, preds):
     else:
         sys.path.append("f30k-caption")
         annFile = 'f30k-caption/annotations/dataset_flickr30k.json'
-    from pycocotools.coco import COCO
-    from pycocoevalcap.eval import COCOEvalCap
+    from libs.coco_caption.pycocotools.coco import COCO
+    from libs.coco_caption.pycocoevalcap.eval import COCOEvalCap
 
     encoder.FLOAT_REPR = lambda o: format(o, '.3f')
 

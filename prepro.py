@@ -57,11 +57,14 @@ def build_vocab(imgs, params):
     for txt in img['processed_tokens']:
       for w in txt:
         counts[w] = counts.get(w, 0) + 1
+  #Counts is the frequency of each word in entire dataset
+  #
   cw = sorted([(count,w) for w,count in counts.items()], reverse=True)
   print( 'top words and their counts:' )
   print( '\n'.join(map(str,cw[:20])) )
 
   # print( some stats
+  #total words in entire data
   total_words = sum(counts.values())
   print( 'total words:', total_words )
   bad_words = [w for w,n in counts.items() if n <= count_thr]
@@ -73,6 +76,7 @@ def build_vocab(imgs, params):
   print( 'number of UNKs: %d/%d = %.2f%%' % (bad_count, total_words, bad_count*100.0/total_words) )
 
   # lets look at the distribution of lengths as well
+  #Calculate which lengths occur how many times : for e.g '7' length is 2 times
   sent_lengths = {}
   for img in imgs:
     for txt in img['processed_tokens']:
@@ -121,7 +125,7 @@ def encode_captions(imgs, params, wtoi):
   each image in the dataset.
   """
 
-  max_length = params['max_length']
+  max_length_of_word = params['max_length']
   N = len(imgs)
   M = sum(len(img['final_captions']) for img in imgs) # total number of captions
 
@@ -135,12 +139,12 @@ def encode_captions(imgs, params, wtoi):
     n = len(img['final_captions'])
     assert n > 0, 'error: some image has no captions'
 
-    Li = np.zeros((n, max_length), dtype='uint32')
-    for j,s in enumerate(img['final_captions']):
-      label_length[caption_counter] = min(max_length, len(s)) # record the length of this sequence
+    Li = np.zeros((n, max_length_of_word), dtype='uint32')
+    for j,sentence in enumerate(img['final_captions']):
+      label_length[caption_counter] = min(max_length_of_word, len(sentence)) # record the length of this sequence
       caption_counter += 1
-      for k,w in enumerate(s):
-        if k < max_length:
+      for k,w in enumerate(sentence):
+        if k < max_length_of_word:
           Li[j,k] = wtoi[w]
 
     # note: word indices are 1-indexed, and captions are padded with zeros
@@ -168,6 +172,7 @@ def main(params):
 
   # create the vocab
   vocab = build_vocab(imgs, params)
+  #index to word and word to index from vocab(total unique words in dataset)
   itow = {i+1:w for i,w in enumerate(vocab)} # a 1-indexed vocab translation table
   wtoi = {w:i+1 for i,w in enumerate(vocab)} # inverse table
 
@@ -187,8 +192,8 @@ def main(params):
   dset = f.create_dataset("images", (N,3,256,256), dtype='uint8') # space for resized images
   for i,img in enumerate(imgs):
     # load the image
-    I = imread(os.path.join(params['images_root'], img['file_path']))
     try:
+        I = imread(os.path.join(params['images_root'], img['file_path']))
         Ir = imresize(I, (256,256))
     except:
         print( 'failed resizing image %s - see http://git.io/vBIE0' % (img['file_path'],) )
@@ -220,7 +225,7 @@ def main(params):
     out['images'].append(jimg)
 
   with open(params['output_json'] , 'w' , encoding='utf8') as hindi_file:
-      pp = json.dumps(out , ensure_ascii='False' , encoding='utf8')
+      pp = json.dumps(out , ensure_ascii='False')# , encoding='utf8')
       hindi_file.write( pp  )
 
 #  hindi_file.write(unicode(pp))
@@ -242,7 +247,7 @@ if __name__ == "__main__":
   # options
   parser.add_argument('--max_length', default=16, type=int, help='max length of a caption, in number of words. captions longer than this get clipped.')
   parser.add_argument('--images_root', default='', help='root location in which images are stored, to be prepended to file_path in input json')
-  parser.add_argument('--word_count_threshold', default=5, type=int, help='only words that occur more than this number of times will be put in vocab')
+  parser.add_argument('--word_count_threshold', default=3, type=int, help='only words that occur more than this number of times will be put in vocab')
   parser.add_argument('--num_test', default=0, type=int, help='number of test images (to withold until very very end)')
 
   args = parser.parse_args()
